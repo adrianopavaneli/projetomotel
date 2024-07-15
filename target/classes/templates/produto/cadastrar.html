@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+
+
+<body>
+	<div th:replace="~{base :: logo('Produtos')}"></div>
+
+	<div class="container">
+
+
+		<div th:replace="~{base :: nav}"></div>
+
+
+
+
+		<div class="card mt-3 mb-3">
+			<form class="card-body" action="/produto/novo" method="post">
+				<div class="form-group">
+					<label for="descricaoProduto">Descrição:</label>
+					<input name="descricaoProduto" class="form-control col-5" placeholder="descrição do produto" />
+
+				</div>
+				<div class="form-group">
+					<label for="unidadeProduto">Unidade:</label>
+					<input name="unidadeProduto" class="form-control col-2" placeholder="unidade do produto" />
+
+				</div>
+				<div class="form-group">
+					<label for="precoProduto">Preço:</label>
+					<input type="text" name="precoProduto" class="form-control col-2" id="precoProduto"
+						placeholder="preço do produto" />
+				</div>
+
+				<div class="form-group">
+
+					<input type="hidden" name="statusProduto" value="ativo">
+				</div>
+
+				<button class="btn btn-dark" type="submit">Cadastrar</button>
+			</form>
+		</div>
+	</div>
+	<footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+
+
+</body>
+
+</html>

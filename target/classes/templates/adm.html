@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<meta charset="UTF-8">
+<head th:replace="~{base :: head}"></head>
+<body>
+	<div th:replace="~{base :: logo('Gerenciamento de Motéis')}"></div>
+
+	<div class="container">
+	
+	<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3 p-1">
+	<div class="navbar-nav">
+	<a class="nav-itm nav-link active" href="produto/cadastrar">Produtos</a>
+	<a class="nav-itm nav-link active" href="quarto/cadastrar">Quartos</a>
+	<a class="nav-itm nav-link active" href="tipoquarto/cadastrar">Tipo de Quartos</a>	
+	<a class="nav-itm nav-link active" href="usuario/cadastrar">Usuários</a>
+	<a class="nav-itm nav-link active" href="/hospedagem/cadastrar">Hospedagem</a>
+	<a class="nav-itm nav-link active" href="/pedido/cadastrar">Pedidos</a>
+	</div>
+	</nav>
+		
+		
+		
+	</div>
+	<footer th:replace="~{base :: footer}"></footer>
+</body>
+</html>

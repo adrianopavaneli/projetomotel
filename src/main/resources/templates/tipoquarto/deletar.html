@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+    <div th:replace="~{base :: logo('Tipo de Quarto')}"></div>
+
+    <div class="container">
+		<div th:replace="~{base :: nav}"></div>
+
+        <h2>Lista de Tipo de Quartos</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descrição</th>                    
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody id="tipoQuartoTable">
+                <!-- tipo de quartos serão carregados aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            let tipoQuarto = []; // Defina uma variável global para armazenar tipo de quartos
+
+            // Chamada AJAX para buscar tipo de quartos
+            $.ajax({
+                url: '/tipoquarto/todos', // URL do endpoint Spring
+                method: 'GET',
+                success: function (data) {
+                    tipoQuarto = data; // Armazene os tipo de quartos recebidos
+                    tipoQuarto.forEach(tipoQuarto => {
+                        $('#tipoQuartoTable').append(`
+                            <tr id="tipoQuarto-${tipoQuarto.id}">
+                                <td>${tipoQuarto.id}</td>
+                                <td>${tipoQuarto.descricao}</td>                                
+                                <td><button type="button" class="btn btn-danger" onclick="deleteTipoQuarto(${tipoQuarto.id})">Deletar</button></td>
+                            </tr>
+                        `);
+                    });
+                },
+                error: function (error) {
+                    console.error('Erro ao carregar tipo de quartos:', error);
+                }
+            });
+
+            // Função para deletar um tipo de quartos
+            window.deleteTipoQuarto = function (id) {
+                if (confirm('Tem certeza que deseja deletar este tipo de quarto?')) {
+                    $.ajax({
+                        url: `/tipoquarto/deletar/${id}`, // URL do endpoint de exclusão
+                        method: 'DELETE',
+                        success: function () {
+                            // Remover a linha da tabela
+                            $(`#tipoQuarto-${id}`).remove();
+                            alert('Tipo de quarto deletado com sucesso.');
+                        },
+                        error: function (error) {
+                            console.error('Erro ao deletar tipo de quarto:', error);
+                            alert('Erro ao deletar tipo de quarto.');
+                        }
+                    });
+                }
+            };
+        });
+    </script>
+
+    <footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+</body>
+
+</html>

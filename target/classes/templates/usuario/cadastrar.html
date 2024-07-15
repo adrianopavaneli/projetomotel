@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+
+
+<body>
+	<div th:replace="~{base :: logo('Usuários')}"></div>
+
+	<div class="container">
+
+
+
+		<div th:replace="~{base :: nav}"></div>
+
+
+
+		<div class="card mt-3 mb-3">
+			<form class="card-body" action="/usuario/novo" method="post">
+				<div class="form-group">
+					<label for="nomeUsuario">Nome:</label>
+					<input name="nomeUsuario" class="form-control col-5" placeholder="nome do usuário" />
+
+				</div>
+				<div class="form-group">
+					<label for="loginUsuario">Login:</label>
+					<input name="loginUsuario" class="form-control col-2" placeholder="login do usuário" />
+
+				</div>
+				<div class="form-group">
+									<label for="emailUsuario">Email:</label>
+									<input type="email" name="emailUsuario" class="form-control col-4" placeholder="email do usuário" />
+				
+								</div>
+								<div class="form-group">
+								    <label for="senhaUsuario">Senha:</label>
+								    <input type="password" name="senhaUsuario" class="form-control col-2" id="senhaUsuario" placeholder="senha do usuário" required />
+								</div>
+								<div class="form-group">
+								    <label for="confirmaSenhaUsuario">Confirmar Senha:</label>
+								    <input type="password" name="confirmaSenhaUsuario" class="form-control col-2" id="confirmaSenhaUsuario" placeholder="confirme a senha do usuário" required />
+								    <small id="passwordMismatch" class="text-danger" style="display: none;">As senhas não correspondem.</small>
+								</div>
+								
+				<div class="form-group">
+
+					
+					
+				</div>
+				<input type="hidden" name="situacaoUsuario" value="A">
+				<button class="btn btn-dark" type="submit">Cadastrar</button>
+			</form>
+		</div>
+	</div>
+	<script>
+	    document.addEventListener('DOMContentLoaded', function () {
+	        var passwordField = document.getElementById('senhaUsuario');
+	        var confirmPasswordField = document.getElementById('confirmaSenhaUsuario');
+	        var mismatchMessage = document.getElementById('passwordMismatch');
+	
+	        function validatePasswords() {
+	            if (passwordField.value !== confirmPasswordField.value) {
+	                mismatchMessage.style.display = 'block';
+	                confirmPasswordField.setCustomValidity('As senhas não correspondem.');
+	            } else {
+	                mismatchMessage.style.display = 'none';
+	                confirmPasswordField.setCustomValidity('');
+	            }
+	        }
+	
+	        passwordField.addEventListener('input', validatePasswords);
+	        confirmPasswordField.addEventListener('input', validatePasswords);
+	    });
+	</script>
+	<footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+
+
+</body>
+
+</html>

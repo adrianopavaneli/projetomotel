@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+    <div th:replace="~{base :: logo('Produtos')}"></div>
+
+    <div class="container">
+		<div th:replace="~{base :: nav}"></div>
+		<div th:if="${mensagemSucesso}" class="alert alert-success" role="alert" th:text="${mensagemSucesso}"></div>
+
+        <h2>Lista de Produtos</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descrição</th>
+                    <th>Unidade</th>
+                    <th>Preço</th>
+                    <th>Status</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody id="productTable">
+                <!-- Produtos serão carregados aqui -->
+            </tbody>
+        </table>
+
+        <h2>Alterar Produto</h2>
+        <form id="productForm" action="/produto/alterar" method="post">
+            <div class="form-group">
+                <label for="idProduto">Código:</label>
+                <input type="text" name="idProduto" id="idProduto" class="form-control col-5" readonly />
+            </div>
+            <div class="form-group">
+                <label for="descricaoProduto">Descrição:</label>
+                <input type="text" name="descricaoProduto" id="descricaoProduto" class="form-control col-5" placeholder="descrição do produto" />
+            </div>
+            <div class="form-group">
+                <label for="unidadeProduto">Unidade:</label>
+                <input type="text" name="unidadeProduto" id="unidadeProduto" class="form-control col-5" placeholder="unidade do produto" />
+            </div>
+            <div class="form-group">
+                <label for="precoProduto">Preço:</label>
+                <input type="text" name="precoProduto" id="precoProduto" class="form-control col-5" placeholder="preço do produto" />
+            </div>
+            <div class="form-group">
+                <label>Status:</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="statusProduto" id="statusAtivo" value="ativo">
+                    <label class="form-check-label" for="statusAtivo">Ativo</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="statusProduto" id="statusInativo" value="inativo">
+                    <label class="form-check-label" for="statusInativo">Inativo</label>
+                </div>
+            </div>
+            <button class="btn btn-dark" type="submit">Alterar</button>
+        </form>
+    </div>
+
+    <script>
+		$(document).ready(function () {
+		    let produtos = [];
+		
+			$.ajax({
+			    url: '/produto/todos',
+			    method: 'GET',
+			    dataType: 'json',  // Assegure-se de que este valor está definido
+			    success: function (data) {
+			        console.log('Produtos recebidos:', data);
+			        produtos = data;
+			        produtos.forEach(produto => {
+			            $('#productTable').append(`
+			                <tr>
+			                    <td>${produto.id}</td>
+			                    <td>${produto.descricao}</td>
+			                    <td>${produto.unidade}</td>
+			                    <td>R$ ${produto.preco.toFixed(2)}</td>
+			                    <td>${produto.status}</td>
+			                    <td><button type="button" class="btn btn-primary" onclick="selectProduct(${produto.id})">Selecionar</button></td>
+			                </tr>
+			            `);
+			        });
+			    },
+			    error: function (error) {
+			        console.error('Erro ao carregar produtos:', error);
+			    }
+			});
+		
+		    window.selectProduct = function (id) {
+		        const produto = produtos.find(p => p.id === id);
+		        if (produto) {
+		            $('#idProduto').val(produto.id);
+		            $('#descricaoProduto').val(produto.descricao);
+		            $('#unidadeProduto').val(produto.unidade);
+		            $('#precoProduto').val(produto.preco.toFixed(2));
+		            $(`input[name="statusProduto"][value="${produto.status}"]`).prop('checked', true);
+		        } else {
+		            console.error('Produto não encontrado:', id);
+		        }
+		    };
+		});
+    </script>
+
+    <footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+</body>
+
+</html>

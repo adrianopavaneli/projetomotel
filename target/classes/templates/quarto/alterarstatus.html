@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+    <div th:replace="~{base :: logo('Quartos')}"></div>
+
+    <div class="container">
+        <div th:replace="~{base :: nav}"></div>
+
+        <!-- Formulário de Alteração -->
+        <h2>Alterar Status do Quarto</h2>
+        <form action="/quarto/alterarstatus" method="post">
+            <div class="form-group col-md-4">
+                <label for="escolhaQuarto">Escolha o Quarto</label>
+                <select id="escolhaQuarto" name="idQuarto" class="custom-select" required>
+                    <option value="" selected>Selecione o Quarto</option>
+                    <option th:each="quarto : ${quartos}" th:value="${quarto.id}"
+                        th:text="${quarto.numero}"></option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="escolhaStatus">Escolha o Status</label>
+                <select id="escolhaStatus" name="statusQuarto" class="custom-select" required>
+                    <option value="" selected>Selecione o Status</option>
+                    <option th:each="status : ${statusQuartoList}" th:value="${status}"
+                        th:text="${status}"></option>
+                </select>
+            </div>
+            <button class="btn btn-dark" type="submit">Alterar Status</button>
+        </form>
+    </div>
+
+    <footer th:replace="~{base :: footer}"></footer>
+    <div th:replace="~{base :: scripts}"></div>
+
+    <script>
+        document.getElementById('escolhaQuarto').addEventListener('change', function() {
+            // Você pode adicionar alguma lógica aqui se precisar atualizar o status dinamicamente
+        });
+    </script>
+</body>
+
+</html>

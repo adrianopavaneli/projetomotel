@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+    <div th:replace="~{base :: logo('Usuários')}"></div>
+
+    <div class="container">
+		<div th:replace="~{base :: nav}"></div>
+        <h2>Lista de Usuários</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Login</th>
+                    <th>Email</th>                    
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody id="usuarioTable">
+                <!-- Usuarios serão carregados aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            let usuarios = []; // Defina uma variável global para armazenar usuarios
+
+            // Chamada AJAX para buscar produtos
+            $.ajax({
+                url: '/usuario/todos', // URL do endpoint Spring
+                method: 'GET',
+                success: function (data) {
+                    usuarios = data; // Armazene os produtos recebidos
+                    usuarios.forEach(usuario => {
+                        $('#usuarioTable').append(`
+                            <tr id="usuario-${usuario.id}">
+                                <td>${usuario.id}</td>
+                                <td>${usuario.nome}</td>
+                                <td>${usuario.login}</td>                                
+                                <td>${usuario.email}</td>
+                                <td><button type="button" class="btn btn-danger" onclick="deleteUsuario(${usuario.id})">Deletar</button></td>
+                            </tr>
+                        `);
+                    });
+                },
+                error: function (error) {
+                    console.error('Erro ao carregar usuarios:', error);
+                }
+            });
+
+            // Função para deletar um usuario
+            window.deleteUsuario = function (id) {
+                if (confirm('Tem certeza que deseja deletar este usuario?')) {
+                    $.ajax({
+                        url: `/usuario/deletar/${id}`, // URL do endpoint de exclusão
+                        method: 'DELETE',
+                        success: function () {
+                            // Remover a linha da tabela
+                            $(`#usuario-${id}`).remove();
+                            alert('Usuario deletado com sucesso.');
+                        },
+                        error: function (error) {
+                            console.error('Erro ao deletar usuario:', error);
+                            alert('Erro ao deletar usuario.');
+                        }
+                    });
+                }
+            };
+        });
+    </script>
+
+    <footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+
+</body>
+
+</html>

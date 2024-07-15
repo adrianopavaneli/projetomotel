@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head th:replace="~{base :: head}"></head>
+<body>
+	<div th:replace="~{base :: logo('Quartos')}"></div>
+
+	<div class="container">
+	
+		<div th:replace="~{base :: nav}"></div>
+				<div class="card mt-1">
+				           <div class="card-header mt-0 mb-0 p-2">Lista de Quartos</div>
+				           <div class="card-body ml-3 mt-0 p-1 mr-2">
+				               <div class="table-responsive">
+				                   <table class="table table-striped">
+				                       <thead class="thead-dark">
+				                           <tr>
+				                               <th>Número</th>
+				                               <th>Descrição</th>
+				                               <th>Valor da Hora</th>
+				                               <th>Valor da Pernoite</th>
+				                               <th>Tipo do Quarto</th>
+				                               <th>Status</th>
+				                           </tr>
+				                       </thead>
+				                       <tbody>
+				                           <tr th:each="quarto : ${quartos}">
+				                               <td th:text="${quarto.numero}"></td>
+				                               <td th:text="${quarto.descricao}"></td>				                               
+											   <td th:text="'R$ ' + ${#numbers.formatDecimal(quarto.valorHora, 1, 'COMMA', 2, 'POINT')}"></td>
+											   <td th:text="'R$ ' + ${#numbers.formatDecimal(quarto.valorPernoite, 1, 'COMMA', 2, 'POINT')}"></td>											   
+				                               <td th:text="${quarto.tipoQuarto.descricao}"></td>
+				                               <td th:text="${quarto.status}"></td>
+				                           </tr>
+				                       </tbody>
+				                   </table>
+				               </div>
+				           </div>
+				       </div>
+		
+		<footer th:replace="~{base :: footer}"></footer>
+		<div th:replace="~{base :: scripts}"></div>
+</body>
+</html>

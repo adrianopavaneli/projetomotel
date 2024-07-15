@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+    <div th:replace="~{base :: logo('Tipo de Quartos')}"></div>
+
+    <div class="container">
+		<div th:replace="~{base :: nav}"></div>
+		<div th:if="${mensagemSucesso}" class="alert alert-success" role="alert" th:text="${mensagemSucesso}"></div>
+        <h2>Lista de Tipos de Quartos</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descrição</th>                    
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody id="tipoQuartoTable">
+                <!-- Produtos serão carregados aqui -->
+            </tbody>
+        </table>
+
+		<h2>Alterar Tipo de Quarto</h2>
+		       <form id="tipoQuartoForm" action="/tipoquarto/alterar" method="post">
+		           <div class="form-group">
+		               <label for="idTipoQuarto">Código:</label>
+		               <input type="text" name="idTipoQuarto" id="idTipoQuarto" class="form-control col-5" readonly />
+		           </div>
+		           <div class="form-group">
+		               <label for="descricaoTipoQuarto">Descrição:</label>
+		               <input type="text" name="descricaoTipoQuarto" id="descricaoTipoQuarto" class="form-control col-5" placeholder="descrição do tipo de Quarto" />
+		           </div>
+		           <button class="btn btn-dark" type="submit">Alterar</button>
+		       </form>
+		   </div>
+
+		   <script>
+		       $(document).ready(function () {
+		           let tipoQuartos = []; // Usar o nome correto para a variável global
+		   
+		           // Chamada AJAX para buscar tipos de quartos
+		           $.ajax({
+		               url: '/tipoquarto/todos', // URL do endpoint Spring
+		               method: 'GET',
+		               success: function (data) {
+		                   tipoQuartos = data; // Armazene os tipos de quartos recebidos
+		                   tipoQuartos.forEach(tipoQuarto => {
+		                       $('#tipoQuartoTable').append(`
+		                           <tr>
+		                               <td>${tipoQuarto.id}</td>
+		                               <td>${tipoQuarto.descricao}</td>
+		                               <td><button type="button" class="btn btn-primary" onclick="selectTipoQuarto(${tipoQuarto.id})">Selecionar</button></td>
+		                           </tr>
+		                       `);
+		                   });
+		               },
+		               error: function (error) {
+		                   console.error('Erro ao carregar tipo de quartos:', error);
+		               }
+		           });
+		   
+		           // Função para selecionar um tipo de quarto e preencher o formulário
+		           window.selectTipoQuarto = function (id) {
+		               const tipoQuarto = tipoQuartos.find(tq => tq.id === id); // Encontre o tipo de quarto na lista armazenada
+		               if (tipoQuarto) {
+		                   $('#idTipoQuarto').val(tipoQuarto.id);
+		                   $('#descricaoTipoQuarto').val(tipoQuarto.descricao);             
+		               } else {
+		                   console.error('Tipo de Quarto não encontrado:', id);
+		               }
+		           };
+		       });
+		   </script>
+
+    <footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+</body>
+
+</html>

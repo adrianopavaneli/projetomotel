@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<meta charset="utf-8"/>
+<head th:replace="~{base :: head}"></head>
+<body>
+	<div th:replace="~{base :: logo('Quartos')}"></div>
+
+	<div class="container">
+	
+		<div th:replace="~{base :: nav}"></div>
+		
+		<div class="mt-0 mb-2 col-5" action="/quarto/sucesso" method="Get">
+			
+			<div class="alert alert-success mb-2" role="alert">
+			Operação realizada com sucesso!
+			</div>			
+			
+		
+	</div>	
+	
+	<footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+</body>
+</html>

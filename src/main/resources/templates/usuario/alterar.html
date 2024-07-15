@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+    <div th:replace="~{base :: logo('Usuarios')}"></div>
+
+    <div class="container">
+		<div th:replace="~{base :: nav}"></div>
+		<div th:if="${mensagemSucesso}" class="alert alert-success" role="alert" th:text="${mensagemSucesso}"></div>
+
+        <h2>Lista de Usuarios</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Login</th>
+                    <th>Email</th>
+                    <th>Senha</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody id="usuarioTable">
+                <!-- Usuarios serão carregados aqui -->
+            </tbody>
+        </table>
+
+        <h2>Alterar Usuário</h2>
+        <form id="usuarioForm" action="/usuario/alterar" method="post">
+            <div class="form-group">
+                <label for="idusuario">Código:</label>
+                <input type="text" name="idUsuario" id="idUsuario" class="form-control col-5" readonly />
+            </div>
+            <div class="form-group">
+                <label for="nomeUsuario">Nome:</label>
+                <input type="text" name="nomeUsuario" id="nomeUsuario" class="form-control col-5" placeholder="nome do usuario" />
+            </div>
+            <div class="form-group">
+                <label for="loginUsuario">Login:</label>
+                <input type="text" name="loginUsuario" id="loginUsuario" class="form-control col-5" placeholder="login do usuario" />
+            </div>
+            <div class="form-group">
+                <label for="emailUsuario">Email:</label>
+                <input type="email" name="emailUsuario" id="emailUsuario" class="form-control col-5" placeholder="email do usuário" />
+            </div>
+			
+			<div class="form-group">
+			                <label for="senhaUsuario">Senha:</label>
+			                <input type="password" name="senhaUsuario" id="senhaUsuario" class="form-control col-5" placeholder="senha do usuário" />
+			            </div>
+			            
+						<button class="btn btn-dark" type="submit">Alterar</button>
+            </div>
+            
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            let usuarios = []; // Defina uma variável global para armazenar usuarios
+
+            // Chamada AJAX para buscar usuarios
+            $.ajax({
+                url: '/usuario/todos', // URL do endpoint Spring
+                method: 'GET',
+                success: function (data) {
+                    usuarios = data; // Armazene os produtos recebidos
+                    usuarios.forEach(usuario => {
+                        $('#usuarioTable').append(`
+                            <tr>
+                                <td>${usuario.id}</td>
+                                <td>${usuario.nome}</td>
+                                <td>${usuario.login}</td>
+								<td>${usuario.email}</td>
+								<td>${usuario.senha}</td>
+                                <td><button type="button" class="btn btn-primary" onclick="selectUsuario(${usuario.id})">Selecionar</button></td>
+                            </tr>
+                        `);
+                    });
+                },
+                error: function (error) {
+                    console.error('Erro ao carregar usuarios:', error);
+                }
+            });
+
+            // Função para selecionar um usuario e preencher o formulário
+            window.selectUsuario = function (id) {
+                const usuario = usuarios.find(p => p.id === id); // Encontre o usuario na lista armazenada
+                if (usuario) {
+                    $('#idUsuario').val(usuario.id);
+                    $('#nomeUsuario').val(usuario.nome);
+                    $('#loginUsuario').val(usuario.login);
+					$('#emailUsuario').val(usuario.email);
+					$('#senhaUsuario').val(usuario.senha);
+                    
+                    
+                } else {
+                    console.error('Usuario não encontrado:', id);
+                }
+            };
+        });
+    </script>
+
+    <footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+</body>
+
+</html>

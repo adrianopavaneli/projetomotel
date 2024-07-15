@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+
+
+<body>
+	<div th:replace="~{base :: logo('Tipo de Quartos')}"></div>
+
+	<div class="container">
+
+
+		<div th:replace="~{base :: nav}"></div>
+
+
+
+
+		<div class="card mt-3 mb-3">
+			<form class="card-body" action="/tipoquarto/novo" method="post">
+				<div class="form-group">
+					<label for="descricaoTipoQuarto">Descrição:</label>
+					<input name="descricaoTipoQuarto" class="form-control col-5" placeholder="descrição do tipo do quarto" />
+
+				</div>
+				
+				
+
+				>
+
+				<button class="btn btn-dark" type="submit">Cadastrar</button>
+			</form>
+		</div>
+	</div>
+	<footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+
+
+
+</body>
+
+</html>

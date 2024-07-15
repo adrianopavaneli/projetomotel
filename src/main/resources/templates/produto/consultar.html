@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head th:replace="~{base :: head}"></head>
+<body>
+    <div th:replace="~{base :: logo('Produtos')}"></div>
+
+    <div class="container">
+        <div th:replace="~{base :: nav}"></div>
+        
+        <div class="card mt-1">
+            <div class="card-header mt-0 mb-0 p-2">Lista de Produtos</div>
+            <div class="card-body ml-3 mt-0 p-1 mr-2">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Id</th>
+                                <th>Descrição</th>
+                                <th>Unidade</th>
+                                <th>Preço</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="produto : ${produtos}">
+                                <td th:text="${produto.id}"></td>
+                                <td th:text="${produto.descricao}"></td>
+                                <td th:text="${produto.unidade}"></td>
+                                <td th:text="'R$ ' + ${#numbers.formatDecimal(produto.preco, 1, 'COMMA', 2, 'POINT')}"></td>
+                                <td th:text="${produto.status}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <footer th:replace="~{base :: footer}"></footer>
+        <div th:replace="~{base :: scripts}"></div>
+    </div>
+</body>
+</html>

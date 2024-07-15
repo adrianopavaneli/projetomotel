@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+    <div th:replace="~{base :: logo('Quartos')}"></div>
+
+    <div class="container">
+		<div th:replace="~{base :: nav}"></div>
+        <h2>Lista de Quartos</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    
+                    <th>Número</th>
+                    <th>Descrição</th>
+                    <th>Valor da Hora</th>
+                    <th>Valor da Pernoite</th>
+                    <th>Tipo do Quarto</th>
+					<th>Descrição</th>
+                </tr>
+            </thead>
+            <tbody id="quartoTable">
+                <!-- Quartos serão carregados aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            let quartos = []; // Defina uma variável global para armazenar quartos
+
+            // Chamada AJAX para buscar quartos
+			$.ajax({
+			    url: '/quarto/todos', // Confirme se a URL está correta
+			    method: 'GET',
+			    success: function (data) {
+			        quartos = data;
+			        // Verifique se os dados são recebidos corretamente no console
+			        console.log(quartos); // Adicione esta linha para depuração
+			        quartos.forEach(quarto => {
+						$('#quartoTable').append(`
+						    <tr id="quarto-${quarto.id}">
+						        
+						        <td>${quarto.numero}</td>
+						        <td>${quarto.descricao}</td>
+						        <td>R$ ${quarto.valorHora.toFixed(2)}</td>
+						        <td>R$ ${quarto.valorPernoite.toFixed(2)}</td> <!-- Corrigido aqui -->
+						        <td>${quarto.tipoQuarto.descricao}</td>					        
+						        <td><button type="button" class="btn btn-danger" onclick="deleteQuarto(${quarto.id})">Deletar</button></td>
+						    </tr>
+						`);
+			        });
+			    },
+			    error: function (error) {
+			        console.error('Erro ao carregar quartos:', error);
+			    }
+			});
+
+            // Função para deletar um produto
+            window.deleteQuarto = function (id) {
+                if (confirm('Tem certeza que deseja deletar este quarto?')) {
+                    $.ajax({
+                        url: `/quarto/deletar/${id}`, // URL do endpoint de exclusão
+                        method: 'DELETE',
+                        success: function () {
+                            // Remover a linha da tabela
+                            $(`#quarto-${id}`).remove();
+                            alert('Quarto deletado com sucesso.');
+                        },
+                        error: function (error) {
+                            console.error('Erro ao deletar quarto:', error);
+                            alert('Erro ao deletar quarto.');
+                        }
+                    });
+                }
+            };
+        });
+    </script>
+
+    <footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+</body>
+
+</html>

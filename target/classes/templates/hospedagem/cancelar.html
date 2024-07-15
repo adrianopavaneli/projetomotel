@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+    <div th:replace="~{base :: logo('Hospedagem')}"></div>
+
+    <div class="container">
+        <div th:replace="~{base :: nav}"></div>
+
+        <h2>Lista de Hospedagens Abertas</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Placa</th>
+                    <th>Descrição</th>
+                    <th>Checkin</th>                    
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody id="hospedagemTable">
+                <!--Hospedagens serão carregadas aqui -->
+            </tbody>
+        </table>
+    </div>
+
+	<script>
+	    $(document).ready(function () {
+	        $.ajax({
+	            url: '/hospedagem/abertas',
+	            method: 'GET',
+	            success: function (data) {
+	                data.forEach(hospedagem => {
+	                    $('#hospedagemTable').append(`
+	                        <tr id="hospedagem-${hospedagem.id}">
+	                            <td>${hospedagem.id}</td>
+	                            <td>${hospedagem.placa}</td>
+	                            <td>${hospedagem.descricao}</td>                                
+	                            <td>${new Date(hospedagem.checkin).toLocaleString()}</td>
+	                            <td><button type="button" class="btn btn-danger" onclick="verificarECancelarHospedagem(${hospedagem.id})">Cancelar</button></td>
+	                        </tr>
+	                    `);
+	                });
+	            },
+	            error: function (error) {
+	                console.error('Erro ao carregar hospedagens:', error);
+	            }
+	        });
+	
+	        window.verificarECancelarHospedagem = function (id) {
+	            $.ajax({
+	                url: `/hospedagem/pedidosporhospedagem/${id}`,
+	                method: 'GET',
+	                success: function (data) {
+	                    if (data.length > 0) {
+	                        alert('Não é possível cancelar a hospedagem pois existem itens de pedido vinculados.');
+	                    } else {
+	                        if (confirm('Tem certeza que deseja cancelar esta hospedagem?')) {
+	                            cancelarHospedagem(id);
+	                        }
+	                    }
+	                },
+	                error: function (error) {
+	                    console.error('Erro ao verificar itens de pedido:', error);
+	                    alert('Erro ao verificar itens de pedido.');
+	                }
+	            });
+	        };
+	
+	        window.cancelarHospedagem = function (id) {
+	            $.ajax({
+	                url: `/hospedagem/cancelar/${id}`,
+	                method: 'POST',
+	                success: function () {
+	                    $(`#hospedagem-${id}`).remove();
+	                    alert('Hospedagem cancelada com sucesso.');
+	                },
+	                error: function (error) {
+	                    console.error('Erro ao cancelar hospedagem:', error);
+	                    alert('Erro ao cancelar a Hospedagem.');
+	                }
+	            });
+	        };
+	    });
+	</script>
+
+    <footer th:replace="~{base :: footer}"></footer>
+    <div th:replace="~{base :: scripts}"></div>
+</body>
+
+</html>

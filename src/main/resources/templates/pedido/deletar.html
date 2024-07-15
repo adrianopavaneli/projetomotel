@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+	<div th:replace="~{base :: logo('Pedidos')}"></div>
+
+	<div class="container">
+		<div th:replace="~{base :: nav}"></div>
+
+		<div class="form-group col-md-4">
+			<label for="hospedagemPedido">Quarto</label>
+			<select id="hospedagemPedido" name="hospedagemId" class="custom-select" required>
+				<option value="" selected>Selecione o Quarto</option>
+				<option th:each="hospedagem : ${hospedagens}" th:value="${hospedagem.id}"
+					th:text="${hospedagem.quarto.numero}"></option>
+			</select>
+		</div>
+		<h2>Lista de Pedidos</h2>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Produto</th>
+					<th>Quantidade</th>
+					<th>Valor Total</th>
+					<th>Ação</th>
+				</tr>
+			</thead>
+			<tbody id="pedidoTable">
+				<!-- Pedidos serão carregados aqui -->
+			</tbody>
+		</table>
+
+		<script>
+		$(document).ready(function () {
+		    $('#hospedagemPedido').change(function () {
+		        var hospedagemId = $(this).val();
+		        if (hospedagemId) {
+		            $.ajax({
+		                url: '/pedido/pedidosporhospedagem/' + hospedagemId,
+		                method: 'GET',
+		                success: function (data) {
+		                    var pedidos = JSON.parse(data);
+		                    var tableBody = $('#pedidoTable');
+		                    tableBody.empty();
+		                    pedidos.forEach(function (pedido) {
+		                        tableBody.append(
+		                            '<tr>' +
+		                            '<td>' + pedido.id + '</td>' +
+		                            '<td>' + pedido.produtoNome + '</td>' +
+		                            '<td>' + pedido.quantidade + '</td>' +									
+		                            '<td>' + pedido.precoTotal + '</td>' +
+		                            '<td><button class="btn btn-danger delete-pedido" data-id="' + pedido.id + '">Cancelar Pedido</button></td>' +
+		                            '</tr>'
+		                        );
+		                    });
+		
+		                    $('.delete-pedido').click(function () {
+		                        var pedidoId = $(this).data('id');
+		                        if (confirm('Tem certeza que deseja deletar este pedido?')) {
+		                            $.ajax({
+		                                url: '/pedido/deletar/' + pedidoId,
+		                                method: 'DELETE',
+		                                success: function () {
+		                                    $('#hospedagemPedido').trigger('change');
+		                                },
+		                                error: function (jqXHR, textStatus, errorThrown) {
+		                                    alert('Erro ao deletar pedido: ' + textStatus + ' - ' + errorThrown);
+		                                }
+		                            });
+		                        }
+		                    });
+		                },
+		                error: function (jqXHR, textStatus, errorThrown) {
+		                    alert('Erro ao buscar pedidos: ' + textStatus + ' - ' + errorThrown);
+		                }
+		            });
+		        }
+		    });
+		});
+		</script>
+
+
+
+		<footer th:replace="~{base :: footer}"></footer>
+		<div th:replace="~{base :: scripts}"></div>
+</body>
+
+</html>

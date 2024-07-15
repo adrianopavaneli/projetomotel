@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+	<div th:replace="~{base :: logo('Usuários')}"></div>
+
+	<div class="container">
+
+		<div th:replace="~{base :: nav}"></div>
+		<div class="card mt-1">
+			<div class="card-header mt-0 mb-0 p-2">Lista de Usuários</div>
+			<div class="card-body ml-3 mt-0 p-1 mr-2">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead class="thead-dark">
+							<tr>
+								<th>Id</th>
+								<th>Nome</th>
+								<th>Login</th>
+								<th>email</th>
+								
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="usuario : ${usuarios}">
+								<td th:text="${usuario.id}"></td>
+								<td th:text="${usuario.nome}"></td>
+								<td th:text="${usuario.login}"></td>
+								<td th:text="${usuario.email}"></td>
+								
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+
+
+		<footer th:replace="~{base :: footer}"></footer>
+		<div th:replace="~{base :: scripts}"></div>
+
+</body>
+
+</html>

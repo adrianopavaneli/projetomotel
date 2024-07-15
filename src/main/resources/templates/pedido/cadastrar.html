@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+
+
+<body>
+	<div th:replace="~{base :: logo('Pedidos')}"></div>
+
+	<div class="container">
+
+		<div th:replace="~{base :: nav}"></div>
+		
+		<div class="card mt-3 mb-3">
+		            <form class="card-body" action="/pedido/novo" method="post">
+		                <div class="form-group col-md-4">
+		                    <label for="hospedagemPedido">Quarto</label>
+		                    <select id="hospedagemPedido" name="hospedagemId" class="custom-select" required>
+		                        <option value="" selected>Selecione o Quarto</option>
+		                        <option th:each="hospedagem : ${hospedagens}" th:value="${hospedagem.id}"
+		                            th:text="${hospedagem.quarto.numero}"></option>
+		                    </select>
+		                </div>
+		
+		                <div class="form-group col-md-4">
+		                    <label for="produtoPedido">Produto</label>
+		                    <select id="produtoPedido" name="produtoId" class="custom-select" required>
+		                        <option value="" selected>Selecione o Produto</option>
+		                        <option th:each="produto : ${produtos}" th:value="${produto.id}"
+		                            th:text="${produto.descricao}"></option>
+		                    </select>
+		                </div>
+		                
+		                <div class="form-group">
+		                    <label for="quantidadePedido">Quantidade:</label>
+		                    <input name="quantidadePedido" class="form-control col-2" placeholder="quantidade" />
+		                </div>
+		
+		                <button class="btn btn-dark" type="submit">Efetuar Pedido</button>
+		            </form>
+		</div>
+
+
+
+
+	</div>
+	<footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+
+</body>
+
+</html>

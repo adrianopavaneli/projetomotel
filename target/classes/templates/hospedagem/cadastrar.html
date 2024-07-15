@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+
+
+<body>
+	<div th:replace="~{base :: logo('Hospedagem')}"></div>
+
+	<div class="container">
+
+
+		<div th:replace="~{base :: nav}"></div>
+
+		<h2>Lista de Quartos Disponíveis</h2>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Número</th>
+					<th>Descrição</th>
+					<th>Valor da Hora</th>
+					<th>Valor da Pernoite</th>
+					<th>Tipo do Quarto</th>
+					<th>Ação</th>
+				</tr>
+			</thead>
+			<tbody id="quartoTable">
+				<!-- quartos serão carregados aqui -->
+			</tbody>
+		</table>
+
+		<h2>Efetuar Hospedagem</h2>
+		<div class="card mt-3 mb-3">
+			<form class="card-body" action="/hospedagem/novo" method="post">    
+			    <div class="form-group">
+			        <label for="quartoDescricao">Quarto Escolhido:</label>
+			        <input id="quartoDescricao" class="form-control col-5" placeholder="quarto escolhido" readonly />
+			        <input type="hidden" id="quartoId" name="quartoId" />
+			    </div>
+				
+				
+			    
+			    <div class="form-group">
+			        <label for="placaHospedagem">Placa do Veículo:</label>
+			        <input name="placaHospedagem" class="form-control col-2" placeholder="placa do veiculo" />
+			    </div>
+			    
+			    <div class="form-group">
+			        <label for="descricaoHospedagem">Descrição do Veículo:</label>
+			        <input name="descricaoHospedagem" class="form-control col-4" placeholder="descrição do veiculo" />
+			    </div>
+				<div class="form-group">
+							        <label for="observacaoHospedagem">Observação:</label>
+							        <input name="observacaoHospedagem" class="form-control col-10" placeholder="observação da hospedagem" />
+							    </div>
+				<input type="hidden" name="statusHospedagem" value="A">
+				<input type="hidden" name="statusQuarto" value="O">
+			    
+			    
+			    <button class="btn btn-dark" type="submit">Check-in</button>
+			</form>
+		</div>
+	</div>
+
+	<script>
+	    $(document).ready(function () {
+	        let quartos = []; // Defina uma variável global para armazenar quartos
+	
+	        // Chamada AJAX para buscar produtos
+	        $.ajax({
+	            url: '/hospedagem/livres', // URL do endpoint Spring
+	            method: 'GET',
+	            success: function (data) {
+	                quartos = data; // Armazene os quartos recebidos
+	                quartos.forEach(quarto => {
+	                    $('#quartoTable').append(`
+	                        <tr>
+	                            <td>${quarto.id}</td>
+	                            <td>${quarto.numero}</td>
+	                            <td>${quarto.descricao}</td>
+	                            <td>R$ ${quarto.valorHora.toFixed(2)}</td>
+	                            <td>R$ ${quarto.valorPernoite.toFixed(2)}</td>
+	                            <td>${quarto.tipoQuarto.descricao}</td>
+	                            <td><button type="button" class="btn btn-primary" onclick="selectQuarto(${quarto.id}, '${quarto.descricao}')">Selecionar</button></td>
+	                        </tr>
+	                    `);
+	                });
+	            },
+	            error: function (error) {
+	                console.error('Erro ao carregar quartos:', error);
+	            }
+	        });
+	
+	        // Função para selecionar um produto e preencher o formulário
+			window.selectQuarto = function (id, descricao) {
+			    $('#quartoDescricao').val(descricao); // Preenche o campo com a descrição do quarto selecionado
+			    $('#quartoId').val(id); // Armazena o ID do quarto selecionado no campo oculto
+			};
+	    });
+	</script>
+	<footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+
+</body>
+
+</html>

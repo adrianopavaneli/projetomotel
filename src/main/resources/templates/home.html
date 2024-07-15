@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+    <div th:replace="~{base :: logo('Dashboard')}"></div>
+
+    <div class="container">
+        <div th:replace="~{base :: nav}"></div>
+
+        <div class="row">
+            <div th:each="quarto : ${quartos}" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div th:class="${quarto.status.name() == 'LIVRE' ? 'card bg-success text-white' : 
+                               quarto.status.name() == 'OCUPADO' ? 'card bg-danger text-white' :
+                               quarto.status.name() == 'MANUTENCAO' ? 'card bg-warning text-dark' :
+							   quarto.status.name() == 'RESERVADO' ? 'card bg-info text-dark' :
+                               quarto.status.name() == 'BLOQUEADO' ? 'card bg-dark text-white' : 'card'}">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="'Quarto ' + ${quarto.numero}"></h5>
+                        <p class="card-text" th:text="${quarto.descricao}"></p>
+                        <p class="card-text" th:text="'Status: ' + ${quarto.status.name()}"></p>
+                        <p class="card-text" th:text="'Valor/Hora: R$ ' + ${#numbers.formatDecimal(quarto.valorHora, 1, 2)}"></p>
+                        <p class="card-text" th:text="'Valor/Pernoite: R$ ' + ${#numbers.formatDecimal(quarto.valorPernoite, 1, 2)}"></p>
+                        
+                        <div th:if="${quarto.status.name() == 'OCUPADO'}">
+                            <p class="card-text" th:text="'Check-in: ' + ${#dates.format(quarto.hospedagemAtual[0].checkin, 'dd/MM/yyyy HH:mm')}"></p>
+                            <p class="card-text" th:text="'Placa: ' + ${quarto.hospedagemAtual[0].placa}"></p>
+                            <p class="card-text" th:text="'Observação: ' + ${quarto.hospedagemAtual[0].obs}"></p>
+                        </div>
+                        
+                        <div th:if="${quarto.status.name() != 'OCUPADO'}">
+                            <p class="card-text">Check-in: </p>
+                            <p class="card-text">Placa: </p>
+                            <p class="card-text">Observação: </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer th:replace="~{base :: footer}"></footer>
+        <div th:replace="~{base :: scripts}"></div>
+    </div>
+</body>    
+
+<style>
+    .card {
+        transition: all 0.3s;
+        margin: 0 auto; /* Centralizar os cards */
+    }
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+    }
+    .card-body {
+        padding: 10px; /* Ajustar padding interno dos cards */
+    }
+</style>
+</html>

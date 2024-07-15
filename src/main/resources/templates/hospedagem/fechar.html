@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head th:replace="~{base :: head}"></head>
+
+<body>
+	<div th:replace="~{base :: logo('Hospedagem')}"></div>
+
+
+
+	<div class="container">
+		<div th:replace="~{base :: nav}"></div>
+		<h2>Checkout</h2>
+		<div class="form-group col-md-4">
+			<label for="hospedagemPedido">Escolha o Quarto</label>
+			<select id="hospedagemPedido" name="hospedagemId" class="custom-select" required>
+				<option value="" selected>Selecione o Quarto</option>
+				<option th:each="hospedagem : ${hospedagens}" th:value="${hospedagem.id}"
+					th:text="${hospedagem.quarto.numero}"></option>
+			</select>
+		</div>
+		
+
+		<h2>Pedidos do Quarto</h2>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Produto</th>
+					<th>Quantidade</th>
+					<th>Valor do Pedido</th>
+				</tr>
+			</thead>
+			<tbody id="pedidoTable">
+				<!-- Pedidos serão carregados aqui -->
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="3" class="text-right"><strong>Valor Total dos Pedidos:</strong></td>
+					<td id="totalValue"><strong></strong></td>
+				</tr>
+			</tfoot>
+		</table>
+		<form id="productForm" action="/hospedagem/checkout" method="post">
+		    <input type="hidden" name="idHospedagem" id="idHospedagem" value="">
+		    <div class="form-row">
+		        <div class="form-group col-md-6">
+		            <label for="horaInicial">Hora do Checkin:</label>
+		            <input type="text" name="horaInicial" id="horaInicial" class="form-control" placeholder="Hora do Checkin" disabled />
+		        </div>
+		        <div class="form-group col-md-6">
+		            <label for="tempoUtilizado">Tempo Utilizado:</label>
+		            <input type="text" name="tempoUtilizado" id="tempoUtilizado" class="form-control" placeholder="Tempo Utilizado" disabled />
+		        </div>
+		    </div>
+		    <div class="form-row">
+		        <div class="form-group col-md-6">
+		            <label for="valorHospedagem">Valor da Hospedagem:</label>
+		            <input type="text" name="valorHospedagem" id="valorHospedagem" class="form-control" placeholder="Valor da Hospedagem" disabled />
+					<input type="hidden" name="valorHospedagem" id="valorHospedagemHidden">
+		        </div>
+				<div class="form-group col-md-6">
+				    <label for="valorTotalHospedagem">Valor Total a pagar:</label>
+				    <input type="text" name="valorTotalHospedagemFormatado" id="valorTotalHospedagem" class="form-control" placeholder="Valor Total a Pagar" readonly />
+				    <input type="hidden" name="valorTotalHospedagem" id="valorTotalHospedagemHidden">
+				</div>
+		        <input type="hidden" name="statusHospedagem" value="F">
+		        <input type="hidden" name="statusQuarto" value="M">
+		        <button id="checkoutButton" class="btn btn-dark" type="submit" disabled>Efetuar Check-out</button>
+		    </div>
+		</form>
+	</div>
+	</div>
+
+	<footer th:replace="~{base :: footer}"></footer>
+	<div th:replace="~{base :: scripts}"></div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+	<script>
+		$(document).ready(function () {
+		    $('#hospedagemPedido').change(function () {
+		        var hospedagemId = $(this).val();
+		        $('#idHospedagem').val(hospedagemId);
+		        if (hospedagemId) {
+		            var totalPedidos = 0;
+		
+		            $.ajax({
+		                url: '/hospedagem/pedidosporhospedagem/' + hospedagemId,
+		                method: 'GET',
+		                success: function (data) {
+		                    var pedidos = JSON.parse(data);
+		                    var tableBody = $('#pedidoTable');
+		                    totalPedidos = 0;
+		
+		                    tableBody.empty();
+		                    pedidos.forEach(function (pedido) {
+		                        var precoTotalFormatado = formatCurrency(pedido.precoTotal);
+		                        tableBody.append(
+		                            '<tr>' +
+		                            '<td>' + pedido.id + '</td>' +
+		                            '<td>' + pedido.produtoNome + '</td>' +
+		                            '<td>' + pedido.quantidade + '</td>' +
+		                            '<td>' + precoTotalFormatado + '</td>' +
+		                            '</tr>'
+		                        );
+		                        totalPedidos += parseFloat(pedido.precoTotal);
+		                    });
+		
+		                    $('#totalValue').html('<strong>' + formatCurrency(totalPedidos) + '</strong>');
+		                    
+		                    // Mova a chamada para getCheckinTime para aqui
+		                    getCheckinTimeAndUpdateTotal(hospedagemId, totalPedidos);
+		                },
+		                error: function (jqXHR, textStatus, errorThrown) {
+		                    console.error("Status: " + textStatus);
+		                    console.error("Error: " + errorThrown);
+		                    alert('Erro ao buscar pedidos: ' + textStatus + ' - ' + errorThrown);
+		                }
+		            });
+		        }
+		    });
+		
+		    function getCheckinTimeAndUpdateTotal(hospedagemId, totalPedidos) {
+		        $.ajax({
+		            url: '/hospedagem/getCheckinTime/' + hospedagemId,
+		            method: 'GET',
+		            success: function (response) {
+		                if (response.checkinTime) {
+		                    var checkinTime = new Date(response.checkinTime);
+		                    var currentTime = new Date();
+		                    var timeUsed = currentTime - checkinTime;
+		
+		                    var hours = Math.floor(timeUsed / 3600000);
+		                    var minutes = Math.floor((timeUsed % 3600000) / 60000);
+		
+		                    $('#horaInicial').val(checkinTime.toLocaleString());
+		                    $('#tempoUtilizado').val(hours + 'h ' + minutes + 'm');
+		
+		                    $.ajax({
+		                        url: '/hospedagem/quartoInfo/' + hospedagemId,
+		                        method: 'GET',
+		                        success: function (quarto) {
+		                            if (quarto.valorHora && quarto.valorPernoite) {
+		                                var valorHospedagem;
+		                                if (hours >= 5) {
+		                                    valorHospedagem = quarto.valorPernoite;
+		                                } else {
+		                                    valorHospedagem = (hours + 1) * quarto.valorHora;
+		                                }
+		                                updateTotalHospedagem(valorHospedagem, totalPedidos);
+										$('#valorHospedagem').val(formatCurrency(valorHospedagem));
+										$('#valorHospedagemHidden').val(valorHospedagem);
+		                                
+		                            } else {
+		                                alert('Erro ao buscar informações do quarto: Dados do quarto incompletos.');
+		                            }
+		                        },
+		                        error: function (jqXHR, textStatus, errorThrown) {
+		                            console.error("Status: " + textStatus);
+		                            console.error("Error: " + errorThrown);
+		                            alert('Erro ao buscar informações do quarto: ' + textStatus + ' - ' + errorThrown);
+		                        }
+		                    });
+		                }
+		            },
+		            error: function (jqXHR, textStatus, errorThrown) {
+		                console.error("Status: " + textStatus);
+		                console.error("Error: " + errorThrown);
+		                alert('Erro ao buscar tempo de check-in: ' + textStatus + ' - ' + errorThrown);
+		            }
+		        });
+		    }
+		
+			function updateTotalHospedagem(valorHospedagem, totalPedidos) {
+			    console.log('Atualizando total...');
+			    console.log('Valor Hospedagem:', valorHospedagem);
+			    console.log('Total Pedidos:', totalPedidos);
+			    var valorTotal = parseFloat(valorHospedagem) + parseFloat(totalPedidos);
+			    $('#valorHospedagem').val(formatCurrency(valorHospedagem));
+			    $('#valorHospedagemHidden').val(valorHospedagem.toFixed(2));
+			    $('#valorTotalHospedagem').val(formatCurrency(valorTotal));
+			    $('#valorTotalHospedagemHidden').val(valorTotal.toFixed(2));
+			    $('#checkoutButton').prop('disabled', false);
+			}
+		
+		    function formatCurrency(value) {
+		        return 'R$ ' + parseFloat(value).toFixed(2).replace('.', ',');
+		    }
+		});
+	</script>
+</body>
+
+</html>
