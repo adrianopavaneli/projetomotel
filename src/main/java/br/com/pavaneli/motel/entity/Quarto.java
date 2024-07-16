@@ -7,7 +7,7 @@ import org.springframework.beans.BeanUtils;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import br.com.pavaneli.motel.dto.QuartoDto;
+import br.com.pavaneli.motel.dto.QuartoDTO;
 import br.com.pavaneli.motel.enums.StatusQuarto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,7 +59,7 @@ public class Quarto {
     private List<Hospedagem> hospedagemAtual = new ArrayList<>();
     
 
-    public Quarto(QuartoDto quartoDto) {
+    public Quarto(QuartoDTO quartoDto) {
         BeanUtils.copyProperties(quartoDto, this);
     }
 }

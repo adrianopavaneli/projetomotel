@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 
-import br.com.pavaneli.motel.dto.HospedagemDto;
+import br.com.pavaneli.motel.dto.HospedagemDTO;
 import br.com.pavaneli.motel.enums.StatusHospedagem;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -62,7 +62,7 @@ public class Hospedagem {
     @OneToMany(mappedBy = "hospedagem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itensPedidos = new ArrayList<>();
 
-    public Hospedagem(HospedagemDto hospedagemDto) {
+    public Hospedagem(HospedagemDTO hospedagemDto) {
         BeanUtils.copyProperties(hospedagemDto, this);
     }
 }

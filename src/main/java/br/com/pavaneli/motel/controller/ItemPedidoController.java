@@ -21,8 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import br.com.pavaneli.motel.dto.ItemPedidoDto;
-import br.com.pavaneli.motel.dto.requisicoes.RequisicaoNovoPedido;
+import br.com.pavaneli.motel.dto.ItemPedidoDTO;
 import br.com.pavaneli.motel.entity.Hospedagem;
 import br.com.pavaneli.motel.entity.ItemPedido;
 import br.com.pavaneli.motel.entity.Produto;
@@ -58,8 +57,8 @@ public class ItemPedidoController {
         return "pedido/cadastrar";
     }
 	@PostMapping("novo")
-	public String novo(@ModelAttribute RequisicaoNovoPedido requisicao) {
-	    ItemPedido itemPedido = requisicao.toItemPedido(produtoRepository, hospedagemRepository);
+	public String novo(@ModelAttribute ItemPedidoDTO requisicao) {
+	    ItemPedido itemPedido = requisicao.toNovoItemPedido(produtoRepository, hospedagemRepository);
 	    
 	    // Salvar o ItemPedido e a Hospedagem atualizada
 	    itemPedidoRepository.save(itemPedido);
@@ -87,7 +86,7 @@ public class ItemPedidoController {
 	@ResponseBody
 	public String getPedidosPorHospedagem(@PathVariable Long hospedagemId) throws JsonProcessingException {
 	    List<ItemPedido> pedidos = itemPedidoRepository.findByHospedagemId(hospedagemId);
-	    List<ItemPedidoDto> pedidosDTO = pedidos.stream()
+	    List<ItemPedidoDTO> pedidosDTO = pedidos.stream()
 	        .map(this::convertToDto)
 	        .collect(Collectors.toList());
 	    
@@ -96,11 +95,11 @@ public class ItemPedidoController {
 	    return mapper.writeValueAsString(pedidosDTO);
 	}
 
-	private ItemPedidoDto convertToDto(ItemPedido itemPedido) {
-	    ItemPedidoDto dto = new ItemPedidoDto();
+	private ItemPedidoDTO convertToDto(ItemPedido itemPedido) {
+	    ItemPedidoDTO dto = new ItemPedidoDTO();
 	    dto.setId(itemPedido.getId());
 	    dto.setProdutoNome(itemPedido.getProduto().getDescricao());
-	    dto.setQuantidade(itemPedido.getQuantidade());
+	    dto.setQuantidadePedido(itemPedido.getQuantidade());
 	    dto.setPrecoTotal(itemPedido.getPrecoTotal());
 	    return dto;
 	}

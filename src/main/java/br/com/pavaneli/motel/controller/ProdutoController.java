@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.com.pavaneli.motel.dto.requisicoes.RequisicaoAlterarProduto;
-import br.com.pavaneli.motel.dto.requisicoes.RequisicaoNovoProduto;
+import br.com.pavaneli.motel.dto.ProdutoDTO;
 import br.com.pavaneli.motel.entity.Produto;
 import br.com.pavaneli.motel.repository.ProdutoRepository;
 
@@ -37,7 +36,7 @@ public class ProdutoController {
 	@ResponseBody
 	public List<Produto> listarTodosProdutos() {
 	    List<Produto> produtos = produtoRepository.findAll(Sort.by("id").ascending());
-	    produtos.forEach(produto -> System.out.println(produto));  // Adicione este log
+	    produtos.forEach(produto -> System.out.println(produto));  
 	    return produtos;
 	}
 	
@@ -60,8 +59,8 @@ public class ProdutoController {
         return "produto/sucesso";
     }
 	@PostMapping("novo")
-	public String novo(RequisicaoNovoProduto requisicao) {
-		Produto produto = requisicao.toProduto();
+	public String novo(ProdutoDTO requisicao) {
+		Produto produto = requisicao.toNovoProduto();
 		produtoRepository.save(produto);
 		return "produto/sucesso";
 	}
@@ -69,8 +68,8 @@ public class ProdutoController {
 	
 	
 	@PostMapping("alterar")
-	public String alterar(RequisicaoAlterarProduto requisicao, BindingResult result, RedirectAttributes redirectAttributes) {
-	    Produto produto = requisicao.toProduto();
+	public String alterar(ProdutoDTO requisicao, BindingResult result, RedirectAttributes redirectAttributes) {
+	    Produto produto = requisicao.toAlterarProduto();
 	    produtoRepository.save(produto);
 	    redirectAttributes.addFlashAttribute("mensagemSucesso", "Produto alterado com sucesso.");
 

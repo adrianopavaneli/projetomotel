@@ -21,9 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.com.pavaneli.motel.dto.requisicoes.RequisicaoAlterarQuarto;
-import br.com.pavaneli.motel.dto.requisicoes.RequisicaoAlterarStatusQuarto;
-import br.com.pavaneli.motel.dto.requisicoes.RequisicaoNovoQuarto;
+import br.com.pavaneli.motel.dto.QuartoDTO;
 import br.com.pavaneli.motel.entity.Quarto;
 import br.com.pavaneli.motel.entity.TipoQuarto;
 import br.com.pavaneli.motel.enums.StatusHospedagem;
@@ -92,14 +90,14 @@ public class QuartoController {
         return "quarto/sucesso";
     }
 	 @PostMapping("novo")
-	    public String novo(@ModelAttribute RequisicaoNovoQuarto requisicao) {
-	        Quarto quarto = requisicao.toQuarto(tipoQuartoRepository);
+	    public String novo(@ModelAttribute QuartoDTO requisicao) {
+	        Quarto quarto = requisicao.toNovoQuarto(tipoQuartoRepository);
 	        quartoRepository.save(quarto);
 	        return "redirect:/quarto/sucesso";
 	    }
 
 	 @PostMapping("alterarstatus")
-	 public String alterarStatus(@ModelAttribute RequisicaoAlterarStatusQuarto requisicao, BindingResult result, RedirectAttributes redirectAttributes) {
+	 public String alterarStatus(@ModelAttribute QuartoDTO requisicao, BindingResult result, RedirectAttributes redirectAttributes) {
 	     if (result.hasErrors()) {
 	         return "quarto/alterarstatus";
 	     }
@@ -133,7 +131,7 @@ public class QuartoController {
 	
 	
 	 @PostMapping("alterar")
-	 public String alterarQuarto(@ModelAttribute RequisicaoAlterarQuarto requisicao, BindingResult result, RedirectAttributes redirectAttributes) {
+	 public String alterarQuarto(@ModelAttribute QuartoDTO requisicao, BindingResult result, RedirectAttributes redirectAttributes) {
 	     if (result.hasErrors()) {
 	         return "quarto/alterar";
 	     }

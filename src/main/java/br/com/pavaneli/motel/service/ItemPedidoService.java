@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.pavaneli.motel.dto.ItemPedidoDto;
+import br.com.pavaneli.motel.dto.ItemPedidoDTO;
 import br.com.pavaneli.motel.entity.Hospedagem;
 import br.com.pavaneli.motel.entity.ItemPedido;
 import br.com.pavaneli.motel.repository.HospedagemRepository;
@@ -20,25 +20,25 @@ public class ItemPedidoService {
 	@Autowired
     private HospedagemRepository hospedagemRepository;
 	
-	public List<ItemPedidoDto> findall(){
+	public List<ItemPedidoDTO> findall(){
 		List<ItemPedido> itemPedidos = itemPedidoRepository.findAll();
-		return itemPedidos.stream().map(ItemPedidoDto::new).toList();
+		return itemPedidos.stream().map(ItemPedidoDTO::new).toList();
 	}
 	
-	public void insert(ItemPedidoDto itemPedidoDto){
+	public void insert(ItemPedidoDTO itemPedidoDto){
         ItemPedido itemPedido = new ItemPedido(itemPedidoDto);
         itemPedidoRepository.save(itemPedido);
     }
-	public ItemPedidoDto update(ItemPedidoDto itemPedidoDto){
+	public ItemPedidoDTO update(ItemPedidoDTO itemPedidoDto){
         ItemPedido itemPedido = new ItemPedido(itemPedidoDto);
-        return new ItemPedidoDto(itemPedidoRepository.save(itemPedido));
+        return new ItemPedidoDTO(itemPedidoRepository.save(itemPedido));
     }
 	public void delete(Long id){
 		ItemPedido itemPedido = itemPedidoRepository.findById(id).get();
         itemPedidoRepository.delete(itemPedido);
     }
-	public ItemPedidoDto findById(Long id) {
-        return new ItemPedidoDto(itemPedidoRepository.findById(id).get());
+	public ItemPedidoDTO findById(Long id) {
+        return new ItemPedidoDTO(itemPedidoRepository.findById(id).get());
 	}
 	 @Transactional
 	    public void deletarEDesvincularPedido(Long id) {

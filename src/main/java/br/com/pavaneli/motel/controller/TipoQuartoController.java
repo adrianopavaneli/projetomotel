@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.com.pavaneli.motel.dto.requisicoes.RequisicaoAlterarTipoQuarto;
-import br.com.pavaneli.motel.dto.requisicoes.RequisicaoNovoTipoQuarto;
+import br.com.pavaneli.motel.dto.TipoQuartoDTO;
 import br.com.pavaneli.motel.entity.TipoQuarto;
 import br.com.pavaneli.motel.repository.TipoQuartoRepository;
 
@@ -60,15 +59,15 @@ public class TipoQuartoController {
     }
 
     @PostMapping("novo")
-    public String novo(RequisicaoNovoTipoQuarto requisicao) {
-        TipoQuarto tipoQuarto = requisicao.toTipoQuarto();
+    public String novo(TipoQuartoDTO requisicao) {
+        TipoQuarto tipoQuarto = requisicao.toNovoTipoQuarto();
         tipoQuartoRepository.save(tipoQuarto);
         return "tipoquarto/sucesso";
     }
 
     @PostMapping("alterar")
-    public String alterar(RequisicaoAlterarTipoQuarto requisicao, BindingResult result, RedirectAttributes redirectAttributes) {
-        TipoQuarto tipoQuarto = requisicao.toTipoQuarto();
+    public String alterar(TipoQuartoDTO requisicao, BindingResult result, RedirectAttributes redirectAttributes) {
+        TipoQuarto tipoQuarto = requisicao.toAlterarTipoQuarto();
         tipoQuartoRepository.save(tipoQuarto);
         redirectAttributes.addFlashAttribute("mensagemSucesso", "Tipo de Quarto alterado com sucesso.");
 

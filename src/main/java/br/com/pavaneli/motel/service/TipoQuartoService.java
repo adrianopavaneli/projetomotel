@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.pavaneli.motel.dto.TipoQuartoDto;
+import br.com.pavaneli.motel.dto.TipoQuartoDTO;
 import br.com.pavaneli.motel.entity.TipoQuarto;
 import br.com.pavaneli.motel.repository.TipoQuartoRepository;
 
@@ -16,25 +16,25 @@ public class TipoQuartoService {
 	private TipoQuartoRepository tipoQuartoRepository;	
 	
 	
-	public List<TipoQuartoDto> findAll(){
+	public List<TipoQuartoDTO> findAll(){
 		List<TipoQuarto> tipoQuartos = tipoQuartoRepository.findAll();
-		return tipoQuartos.stream().map(TipoQuartoDto::new).toList();
+		return tipoQuartos.stream().map(TipoQuartoDTO::new).toList();
 		
 	}
-	public void insert(TipoQuartoDto tipoQuartoDto){
+	public void insert(TipoQuartoDTO tipoQuartoDto){
 		TipoQuarto tipoQuarto = new TipoQuarto(tipoQuartoDto);
         tipoQuartoRepository.save(tipoQuarto);
 	}
-	public TipoQuartoDto update(TipoQuartoDto tipoQuartoDto){
+	public TipoQuartoDTO update(TipoQuartoDTO tipoQuartoDto){
         TipoQuarto tipoQuarto = new TipoQuarto(tipoQuartoDto);
-        return new TipoQuartoDto(tipoQuartoRepository.save(tipoQuarto));
+        return new TipoQuartoDTO(tipoQuartoRepository.save(tipoQuarto));
     }
 	public void delete(Long id) {
         TipoQuarto tipoQuarto = tipoQuartoRepository.findById(id).get();
         tipoQuartoRepository.delete(tipoQuarto);
     }
-	public TipoQuartoDto findById(Long id) {
-        return new TipoQuartoDto(tipoQuartoRepository.findById(id).get());
+	public TipoQuartoDTO findById(Long id) {
+        return new TipoQuartoDTO(tipoQuartoRepository.findById(id).get());
     }
 
 }

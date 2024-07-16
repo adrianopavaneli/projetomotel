@@ -27,9 +27,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import br.com.pavaneli.motel.dto.ItemPedidoDto;
-import br.com.pavaneli.motel.dto.requisicoes.RequisicaoFecharHospedagem;
-import br.com.pavaneli.motel.dto.requisicoes.RequisicaoNovaHospedagem;
+import br.com.pavaneli.motel.dto.HospedagemDTO;
+import br.com.pavaneli.motel.dto.ItemPedidoDTO;
 import br.com.pavaneli.motel.entity.Hospedagem;
 import br.com.pavaneli.motel.entity.ItemPedido;
 import br.com.pavaneli.motel.entity.Quarto;
@@ -72,7 +71,7 @@ public class HospedagemController {
 	}
 	
 	@PostMapping("novo")
-	public String novo(@ModelAttribute RequisicaoNovaHospedagem requisicao, RedirectAttributes redirectAttributes) {
+	public String novo(@ModelAttribute HospedagemDTO requisicao, RedirectAttributes redirectAttributes) {
 	    System.out.println("Método novo() chamado");
 	    System.out.println("Dados recebidos: " + requisicao.toString());
 	    try {
@@ -91,7 +90,7 @@ public class HospedagemController {
 	            return "redirect:/hospedagem/cadastrar";
 	        }
 
-	        Hospedagem hospedagem = requisicao.toHospedagem(quartoRepository);
+	        Hospedagem hospedagem = requisicao.toNovaHospedagem(quartoRepository);
 	        System.out.println("Hospedagem criada: " + hospedagem.toString());
 	        
 	        // Atualiza o status do quarto
@@ -125,7 +124,7 @@ public class HospedagemController {
 	@ResponseBody
 	public String getPedidosPorHospedagem(@PathVariable Long hospedagemId) throws JsonProcessingException {
 	    List<ItemPedido> pedidos = itemPedidoRepository.findByHospedagemId(hospedagemId);
-	    List<ItemPedidoDto> pedidosDTO = pedidos.stream()
+	    List<ItemPedidoDTO> pedidosDTO = pedidos.stream()
 	        .map(this::convertToDTO)
 	        .collect(Collectors.toList());
 	    
@@ -133,11 +132,11 @@ public class HospedagemController {
 	    mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 	    return mapper.writeValueAsString(pedidosDTO);
 	}
-	private ItemPedidoDto convertToDTO(ItemPedido itemPedido) {
-	    ItemPedidoDto dto = new ItemPedidoDto();
+	private ItemPedidoDTO convertToDTO(ItemPedido itemPedido) {
+	    ItemPedidoDTO dto = new ItemPedidoDTO();
 	    dto.setId(itemPedido.getId());
 	    dto.setProdutoNome(itemPedido.getProduto().getDescricao());
-	    dto.setQuantidade(itemPedido.getQuantidade());
+	    dto.setQuantidadePedido(itemPedido.getQuantidade());
 	    dto.setPrecoTotal(itemPedido.getPrecoTotal());
 	    return dto;
 	}
@@ -164,7 +163,7 @@ public class HospedagemController {
 	    return response;
 	}
 	@PostMapping("checkout")
-	public String alterar(@ModelAttribute RequisicaoFecharHospedagem requisicao) {
+	public String alterar(@ModelAttribute HospedagemDTO requisicao) {
 	    System.out.println("Valor da Hospedagem recebido: " + requisicao.getValorHospedagem());
 	    System.out.println("Valor Total da Hospedagem recebido: " + requisicao.getValorTotalHospedagem());
 

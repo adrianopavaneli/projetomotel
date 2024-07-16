@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.pavaneli.motel.dto.ProdutoDto;
+import br.com.pavaneli.motel.dto.ProdutoDTO;
 import br.com.pavaneli.motel.entity.Produto;
 import br.com.pavaneli.motel.repository.ProdutoRepository;
 
@@ -15,25 +15,25 @@ public class ProdutoService {
 	@Autowired
 	private ProdutoRepository produtoRepository;
 
-	public List<ProdutoDto> findAll(){
+	public List<ProdutoDTO> findAll(){
 		List<Produto> produtos = produtoRepository.findAll();
-        return produtos.stream().map(ProdutoDto::new).toList();
+        return produtos.stream().map(ProdutoDTO::new).toList();
 	}
-	public void insert(ProdutoDto produtoDto) {
+	public void insert(ProdutoDTO produtoDto) {
 		Produto produto = new Produto(produtoDto);
 		produtoRepository.save(produto);
 		
 	}
-	public ProdutoDto update(ProdutoDto produtoDto) {
+	public ProdutoDTO update(ProdutoDTO produtoDto) {
         Produto produto = new Produto(produtoDto);
-        return new ProdutoDto(produtoRepository.save(produto));
+        return new ProdutoDTO(produtoRepository.save(produto));
     }
 	public void delete(Long id) {
 		Produto produto = produtoRepository.findById(id).get();
         produtoRepository.delete(produto);
     }
 		
-	public ProdutoDto findById(Long id) {
-        return new ProdutoDto(produtoRepository.findById(id).get());
+	public ProdutoDTO findById(Long id) {
+        return new ProdutoDTO(produtoRepository.findById(id).get());
     }
 }

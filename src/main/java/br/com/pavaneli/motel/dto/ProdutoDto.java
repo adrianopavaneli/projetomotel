@@ -10,15 +10,41 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProdutoDto {
-	private Long id;	
-	private String descricao;	
-	private Double preco;	
-	private String unidade;	
-	private String status;
+public class ProdutoDTO {
+	private String idProduto;	
+	private String descricaoProduto;	
+	private String precoProduto;	
+	private String unidadeProduto;	
+	private String statusProduto;
 	
-	  public ProdutoDto(Produto produto) {
+	  public ProdutoDTO(Produto produto) {
 	        BeanUtils.copyProperties(produto, this);
 	    }
+	  
+	  public Produto toNovoProduto() {
+			Produto produto = new Produto();
+			produto.setDescricao(descricaoProduto);
+			produto.setUnidade(unidadeProduto);
+			Double precoCerto = Double.parseDouble(precoProduto);
+			produto.setPreco(precoCerto);
+			produto.setStatus(statusProduto);
+			return produto;
+		}
+	  public Produto toAlterarProduto() {
+		    Produto produto = new Produto();
+		    if (idProduto != null && !idProduto.isEmpty()) {
+		        produto.setId(Long.parseLong(idProduto));
+		    }
+		    produto.setDescricao(descricaoProduto);
+		    produto.setUnidade(unidadeProduto);
+		    produto.setPreco(Double.parseDouble(precoProduto));
+		    produto.setStatus(statusProduto);
+		    return produto;
+		}
+	  
+	  public String toDeleteProduto() {
+			String id = idProduto;
+			return id;
+		}
 
 }

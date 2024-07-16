@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.pavaneli.motel.dto.QuartoDto;
+import br.com.pavaneli.motel.dto.QuartoDTO;
 import br.com.pavaneli.motel.entity.Quarto;
 import br.com.pavaneli.motel.repository.QuartoRepository;
 
@@ -15,23 +15,23 @@ public class QuartoService {
 	@Autowired
 	private QuartoRepository quartoRepository;
 	
-	public List<QuartoDto> findAll(){
+	public List<QuartoDTO> findAll(){
 		List<Quarto> quartos = quartoRepository.findAll();
-		return quartos.stream().map(QuartoDto::new).toList();
+		return quartos.stream().map(QuartoDTO::new).toList();
     }
-	public void insert(QuartoDto quartoDto) {
+	public void insert(QuartoDTO quartoDto) {
 		Quarto quarto = new Quarto(quartoDto);
         quartoRepository.save(quarto);
 	}
-	public QuartoDto update(QuartoDto quartoDto) {
+	public QuartoDTO update(QuartoDTO quartoDto) {
         Quarto quarto = new Quarto(quartoDto);
-        return new QuartoDto(quartoRepository.save(quarto));
+        return new QuartoDTO(quartoRepository.save(quarto));
     }
 	public void delete(Long id) {
         Quarto quarto = quartoRepository.findById(id).get();
 		quartoRepository.delete(quarto);
     }
-	public QuartoDto findById(Long id) {
-        return new QuartoDto(quartoRepository.findById(id).get());
+	public QuartoDTO findById(Long id) {
+        return new QuartoDTO(quartoRepository.findById(id).get());
     }
 }

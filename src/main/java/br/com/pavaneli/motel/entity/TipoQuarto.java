@@ -2,7 +2,7 @@ package br.com.pavaneli.motel.entity;
 
 import org.springframework.beans.BeanUtils;
 
-import br.com.pavaneli.motel.dto.TipoQuartoDto;
+import br.com.pavaneli.motel.dto.TipoQuartoDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +29,7 @@ public class TipoQuarto {
 //    @JsonManagedReference
 //    private List<Quarto> quartos = new ArrayList<>();
 
-    public TipoQuarto(TipoQuartoDto tipoQuarto) {
+    public TipoQuarto(TipoQuartoDTO tipoQuarto) {
         BeanUtils.copyProperties(tipoQuarto, this);
     }
 }

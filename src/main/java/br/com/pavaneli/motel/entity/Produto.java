@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import br.com.pavaneli.motel.dto.ProdutoDto;
+import br.com.pavaneli.motel.dto.ProdutoDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -38,7 +38,7 @@ public class Produto {
     @JsonManagedReference
     private List<ItemPedido> itensPedidos = new ArrayList<>();
 
-    public Produto(ProdutoDto produto) {
+    public Produto(ProdutoDTO produto) {
         BeanUtils.copyProperties(produto, this);
     }
 }

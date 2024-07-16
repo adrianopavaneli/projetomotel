@@ -4,7 +4,7 @@ import org.springframework.beans.BeanUtils;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import br.com.pavaneli.motel.dto.ItemPedidoDto;
+import br.com.pavaneli.motel.dto.ItemPedidoDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,7 +40,7 @@ public class ItemPedido {
     @JsonBackReference
     private Produto produto;
 
-    public ItemPedido(ItemPedidoDto itemPedidoDto) {
+    public ItemPedido(ItemPedidoDTO itemPedidoDto) {
         BeanUtils.copyProperties(itemPedidoDto, this);
     }
 

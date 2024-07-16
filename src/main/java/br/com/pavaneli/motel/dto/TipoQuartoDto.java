@@ -10,13 +10,36 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TipoQuartoDto {
-	private Long id;			
-	private String descricao;	
+public class TipoQuartoDTO {
+	private String idTipoQuarto;			
+	private String descricaoTipoQuarto;	
 	
 	
-	  public TipoQuartoDto(TipoQuarto tipoQuarto) {
+	  public TipoQuartoDTO(TipoQuarto tipoQuarto) {
 	        BeanUtils.copyProperties(tipoQuarto, this);
 	    }
+	  
+	  public TipoQuarto toNovoTipoQuarto() {
+			TipoQuarto tipoQuarto = new TipoQuarto();
+			tipoQuarto.setDescricao(descricaoTipoQuarto);
+			
+			return tipoQuarto;
+		}
+	  
+	  public TipoQuarto toAlterarTipoQuarto() {
+			TipoQuarto tipoQuarto = new TipoQuarto();
+			if (idTipoQuarto != null && !idTipoQuarto.isEmpty()) {
+				tipoQuarto.setId(Long.parseLong(idTipoQuarto));
+			}
+			tipoQuarto.setDescricao(descricaoTipoQuarto);
+			
+			return tipoQuarto;
+		}
+	  
+	  public String toDeleteTipoQuarto() {
+			String id = idTipoQuarto;
+			return id;
+		}
+
 
 }
